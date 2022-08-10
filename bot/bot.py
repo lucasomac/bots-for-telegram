@@ -19,7 +19,7 @@ token = os.getenv("TOKEN")
 def run(updater):
     if mode == "dev":
         updater.start_polling()
-    elif mode == "prod":
+    elif mode == "prd":
         PORT = int(os.environ.get("PORT", "8443"))
         HEROKU_APP_NAME = os.environ.get("HEROKU_APP_NAME")
         # Code from https://github.com/python-telegram-bot/python-telegram-bot/wiki/Webhooks#heroku
