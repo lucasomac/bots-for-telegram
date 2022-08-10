@@ -93,5 +93,4 @@ def main_bot():
     dispatcher.add_handler(CallbackQueryHandler(get_id, pattern='get_id'))
     dispatcher.add_handler(CallbackQueryHandler(list_lottery, pattern='list_lottery'))
     dispatcher.add_handler(CallbackQueryHandler(get_lottery))
-    # updater.start_polling()
     updater.idle()
