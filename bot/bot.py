@@ -5,8 +5,8 @@ import sys
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import CommandHandler, Updater, CallbackQueryHandler
 
-from bot.messages import main_menu_message, continue_menu_message, list_lottery_message
-from web.loteria import get_result
+from features.messages.messages import main_menu_message, continue_menu_message, list_lottery_message
+from features.lottery.loteria import get_result
 
 # Enabling logging
 log.basicConfig(level=log.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
@@ -14,20 +14,6 @@ logger = log.getLogger(__name__)
 
 mode = os.getenv("MODE")
 token = os.getenv("TOKEN")
-
-
-def run(updater):
-    if mode == "dev":
-        updater.start_polling()
-    elif mode == "prd":
-        PORT = int(os.environ.get("PORT", "8443"))
-        HEROKU_APP_NAME = os.environ.get("HEROKU_APP_NAME")
-        # Code from https://github.com/python-telegram-bot/python-telegram-bot/wiki/Webhooks#heroku
-        updater.start_webhook(listen="0.0.0.0", port=PORT, url_path=token)
-        updater.bot.set_webhook("https://{}.herokuapp.com/{}".format(HEROKU_APP_NAME, token))
-    else:
-        logger.error("No MODE specified!")
-        sys.exit(1)
 
 
 def main_menu_keyboard():
@@ -84,9 +70,23 @@ def list_lottery(update, context):
                              reply_markup=list_lottery_keyboard())
 
 
+def run(updater):
+    if mode == "dev":
+        updater.start_polling()
+    elif mode == "prd":
+        PORT = int(os.environ.get("PORT", "88"))
+        HEROKU_APP_NAME = os.environ.get("HEROKU_APP_NAME")
+        # Code from https://github.com/python-telegram-bot/python-telegram-bot/wiki/Webhooks#heroku
+        updater.start_webhook(listen="0.0.0.0", port=PORT, url_path=token)
+        updater.bot.set_webhook("https://{}.herokuapp.com/{}".format(HEROKU_APP_NAME, token))
+    else:
+        logger.error("No MODE specified!")
+        sys.exit(1)
+
+
 def main_bot():
     logger.info("Starting bot")
-    updater = Updater(token, use_context=True)
+    updater = Updater(token)
     dispatcher = updater.dispatcher
     run(updater)
     dispatcher.add_handler(CommandHandler('start', start))
