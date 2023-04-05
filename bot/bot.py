@@ -5,8 +5,9 @@ import sys
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import CommandHandler, Updater, CallbackQueryHandler
 
-from features.messages.messages import main_menu_message, continue_menu_message, list_lottery_message
+from bot.menu import main_menu_keyboard, lottery_menu_keyboard
 from features.lottery.loteria import get_result
+from features.messages.messages import main_menu_message, continue_menu_message, list_lottery_message
 
 # Enabling logging
 log.basicConfig(level=log.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
@@ -14,12 +15,6 @@ logger = log.getLogger(__name__)
 
 mode = os.getenv("MODE")
 token = os.getenv("TOKEN")
-
-
-def main_menu_keyboard():
-    keyboard = [[InlineKeyboardButton('Id', callback_data='get_id'),
-                 InlineKeyboardButton('Loteria', callback_data='list_lottery')]]
-    return InlineKeyboardMarkup(keyboard)
 
 
 # def start(update: Update, context: CallbackContext):
@@ -52,22 +47,11 @@ def get_lottery(update, context):
     start_continue(update, context)
 
 
-def list_lottery_keyboard():
-    keyboard = [[InlineKeyboardButton('DIADESORTE', callback_data='diadesorte'),
-                 InlineKeyboardButton('DUPLASENA', callback_data='duplasena'),
-                 InlineKeyboardButton('LOTOFACIL', callback_data='lotofacil')],
-                [InlineKeyboardButton('LOTOMANIA', callback_data='lotomania'),
-                 InlineKeyboardButton('MEGASENA', callback_data='megasena'),
-                 InlineKeyboardButton('QUINA', callback_data='quina')],
-                [InlineKeyboardButton('TIMEMANIA', callback_data='timemania')]]
-    return InlineKeyboardMarkup(keyboard)
-
-
 def list_lottery(update, context):
     query = update.callback_query
     context.bot.send_message(chat_id=query.message.chat_id,
                              text=list_lottery_message(),
-                             reply_markup=list_lottery_keyboard())
+                             reply_markup=lottery_menu_keyboard())
 
 
 def run(updater):
